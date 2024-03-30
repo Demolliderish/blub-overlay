@@ -25,6 +25,7 @@ export const {
   signIn, // For server component OR server action signin
   signOut,
 } = NextAuth({
+  trustHost: true,
   pages: {
     signIn: "/auth/login",
     error: "/auth/error"
