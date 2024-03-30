@@ -33,7 +33,7 @@ const ioHandler = (req: NextApiRequest, res: NextApiResponseServerIO) => {
                 io.to(room).emit(
                     ClientSocketEvents.SERVER_MESSAGE,
                     {
-                        user: "DEV",
+                        user: null,
                         type: ClientSocketEvents.HAS_JOINED_ROOM,
                         message: `${user.name} has joined the room`
                     } as TempMessage

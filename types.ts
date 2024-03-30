@@ -49,7 +49,7 @@ export type JoinRoomSocketEventsParams = OverlayClientInstance | {
 
 
 export type TempMessage = {
-    user: User | null | "DEV",
+    user: User | null,
     type: ClientSocketEvents,
     message: string
 }
