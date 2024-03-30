@@ -1,0 +1,101 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Database instance
+datasource db {
+  provider = "cockroachdb"
+  url      = env("DATABASE_URL")
+}
+
+// Next Auth Authentication Schema 
+model Widget {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+model User {
+  id            String    @id @default(uuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  password      String?
+  image         String?
+
+  role      UserRole @default(USER)
+  updatedAt DateTime @updatedAt
+
+  overlays UserOnOverlay[]
+  room     Room?           @relation(fields: [roomID], references: [id])
+  roomID   String?
+  accounts Account[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+// Email verification token
+model VerificationToken {
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
+  expires DateTime
+
+  @@unique([email, token])
+}
+
+// ------------------------------------------------- //
+
+// Main Overlay
+model Overlay {
+  id        String @id @default(uuid())
+  overlayID String
+  name      String
+  github    String
+
+  users UserOnOverlay[]
+  // room  Room?
+}
+
+model UserOnOverlay {
+  id String @id @default(uuid())
+
+  user   User   @relation(fields: [userID], references: [id])
+  userID String
+
+  overlay   Overlay @relation(fields: [overlayID], references: [id])
+  overlayID String
+}
+
+model Room {
+  id         String @id @default(uuid())
+  inviteCode String @unique
+
+  users User[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // overlay   Overlay @relation(fields: [overlayID], references: [id])
+  // overlayID String  @unique
+}

@@ -1,18 +1,27 @@
 "use client"
 
 import axios from "axios";
+import { ServerSocketEvents } from "@/types";
+import { useState } from "react";
+import { useSession } from "next-auth/react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
-export const MessageInput = () => {
+export const MessageInput = ({ roomId }: { roomId: string }) => {
+    const [message, setMessage] = useState("")
+
+    const session = useSession()
+    const user = session.data?.user
+
     const onSubmit = async () => {
         try {
-            const message = "HELLO FROM BUTTON :)"
-            const url = "/api/socket/onMessage";
+            const url = "/api/socket/eventHandler";
             const res = await axios.post(url, {
-                event: 'message',
-                data: message
+                event: ServerSocketEvents.USER_MESSAGE,
+                message: message,
+                user: user,
+                roomId: roomId,
             });
-
-            console.log(res.status)
         } catch (error) {
             console.log(error);
         }
@@ -20,9 +29,18 @@ export const MessageInput = () => {
 
     return (
         <>
-            <button onClick={onSubmit} className="bg-blue-500 rounded-lg p-5">
-                Click to send a message to server
-            </button>
+            <Input
+                type="text"
+                className="w-1/3"
+                value={message}
+                placeholder="Send a message to the room"
+                onChange={(e) => setMessage(e.target.value)}
+            />
+            <Button variant={"default"}
+                onClick={onSubmit}
+            >
+                Send Message
+            </Button>
         </>
     )
 }
