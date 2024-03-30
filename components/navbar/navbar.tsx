@@ -12,9 +12,9 @@ import { useSession } from "next-auth/react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { signOut } from "next-auth/react"
 import { UserButton } from "../auth/userButton"
 import { FaSignOutAlt } from "react-icons/fa";
+import { logout } from "@/server/auth/logout"
 
 export const NavbarSession = () => {
 
@@ -46,13 +46,12 @@ export const NavbarSession = () => {
                 {session.status === "authenticated" ?
                     <>
                         <UserButton />
-
-                        <form onSubmit={() => signOut()}>
-                            <Button className="rounded-lg m-2 cursor-pointer" variant={"destructive"}>
-                                <FaSignOutAlt className="w-4 h-4 mr-2" />
-                                <h1 className="font-bold">Sign Out</h1>
-                            </Button>
-                        </form>
+                        <Button className="rounded-lg m-2 cursor-pointer" variant={"destructive"} onClick={() => {
+                            logout()
+                        }}>
+                            <FaSignOutAlt className="w-4 h-4 mr-2" />
+                            <h1 className="font-bold">Sign Out</h1>
+                        </Button>
                     </> :
                     <>
                         <Link href={"/auth/login"} className="ml-auto m-2">
