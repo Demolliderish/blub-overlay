@@ -8,7 +8,7 @@ export const InviteCodeBtn = ({ roomId }: { roomId: string }) => {
     const origin = useOrigin() 
     
     const onClick = () => {
-        const inviteCode = getInviteCode({ room_id: roomId }).then((inviteCode) => {
+        getInviteCode({ room_id: roomId }).then((inviteCode) => {
             if (!inviteCode) {
                 toast.error("Something went wrong!")
                 return

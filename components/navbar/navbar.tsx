@@ -10,8 +10,6 @@ import {
 import { useSession } from "next-auth/react"
 
 import Link from "next/link"
-
-import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { signOut } from "next-auth/react"
@@ -49,7 +47,7 @@ export const NavbarSession = () => {
                     <>
                         <UserButton />
 
-                        <form onSubmit={() => signOut({ callbackUrl: "/" })}>
+                        <form onSubmit={() => signOut()}>
                             <Button className="rounded-lg m-2 cursor-pointer" variant={"destructive"}>
                                 <FaSignOutAlt className="w-4 h-4 mr-2" />
                                 <h1 className="font-bold">Sign Out</h1>

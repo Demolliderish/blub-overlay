@@ -3,7 +3,7 @@ import Image from "next/image";
 import { SocketProvider } from "@/components/providers/socket-provider";
 import { SocketIndicator } from "@/components/indicators/socket-indicator";
 
-import { MessageInput } from "@/components/sendMessage";
+import { MessageInput } from "@/components/dashboard/sendMessage";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { auth, signOut } from "@/auth";

@@ -11,6 +11,7 @@ import { getUserByEmail } from '@/lib/user'
 
 export const login = async (
     values: z.infer<typeof LoginSchema>,
+    callbackUrl?: string | null
 ) => {
     const parsed = LoginSchema.safeParse(values)
 
@@ -40,7 +41,7 @@ export const login = async (
         await signIn("credentials", {
             email,
             password,
-            redirectTo: DEFAULT_LOGIN_REDIR
+            redirectTo: callbackUrl || DEFAULT_LOGIN_REDIR
         })
     }
     catch (e) {

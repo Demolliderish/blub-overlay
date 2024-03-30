@@ -24,7 +24,7 @@ export default auth((req) => {
     if (isApiAuthRoute) return // Do nothing if API auth route
 
     if (isAuthRoute) {
-        if(isLoggedIn) {
+        if (isLoggedIn) {
             return Response.redirect(new URL(DEFAULT_LOGIN_REDIR, nextUrl))
         }
         else {
@@ -33,8 +33,18 @@ export default auth((req) => {
     }
 
     if (!isLoggedIn && !isPublicRoutes) {
+
+        let callbackUrl = nextUrl.pathname
+        if (nextUrl.search) {
+            callbackUrl += nextUrl.search
+        }
+
+        const encodedCallbackUrl = encodeURIComponent(callbackUrl)
+
         // If user is NOT logged in AND is NOT a public route redirect to login page
-        return Response.redirect(new URL('/auth/login', nextUrl))
+        return Response.redirect(new URL(
+            `/auth/login?callbackUrl=${encodedCallbackUrl}`,
+            nextUrl))
     }
 
     return // Show page if user is logged in OR is a public route

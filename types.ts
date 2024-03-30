@@ -47,6 +47,13 @@ export type JoinRoomSocketEventsParams = OverlayClientInstance | {
 
 // TEMPORARY TYPES FOR TESTING PURPOSES
 
+export type TempClientMessage = {
+    apiUrl: "/api/socket/eventHandler" | string
+    message: string
+    user: User
+    roomId: string
+    event: ServerSocketEvents
+}
 
 export type TempMessage = {
     user: User | null,

@@ -8,12 +8,16 @@ import { FaGithub } from "react-icons/fa";
 import { signIn } from "next-auth/react" // For client component signin
 import { DEFAULT_LOGIN_REDIR } from "@/routes";
 import { clientProviders } from "@/auth.config";
+import { useSearchParams } from "next/navigation";
 
 export const ProvidersLogin = () => {
 
+    const searchParams = useSearchParams()
+    const callbackUrl = searchParams?.get("callbackUrl") || null;
+
     const onClick = (prodiver: clientProviders) => {
         signIn(prodiver, {
-            callbackUrl: DEFAULT_LOGIN_REDIR,
+            callbackUrl: callbackUrl || DEFAULT_LOGIN_REDIR,
         })
     }
 

@@ -56,7 +56,6 @@ export const {
 
       return true
     },
-
     async session({ token, session }) {
       // Define user ID
       if (token.sub && session.user) {

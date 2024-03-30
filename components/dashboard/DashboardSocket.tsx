@@ -1,5 +1,5 @@
 "use client"
-import { MessageInput } from "@/components/sendMessage"
+import { MessageInput } from "@/components/dashboard/sendMessage"
 import { ClientDashboardProps } from "./dashboard"
 import { useMessageSocket } from "@/hooks/client-side/use-message-socket"
 import { useEffect, useState } from "react"
@@ -60,8 +60,9 @@ export const DashboardWithSocket = ({ params }: ClientDashboardProps) => {
                     )
                 }
             </div>
-            {/* <SocketIndicator /> */}
+
             <SocketIndicator />
+
             <MessageInput roomId={params.room_id} />
         </main>
     )
