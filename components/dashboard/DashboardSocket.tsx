@@ -1,6 +1,4 @@
 "use client"
-
-import { SocketIndicator } from "@/components/indicators/socket-indicator"
 import { MessageInput } from "@/components/sendMessage"
 import { ClientDashboardProps } from "./dashboard"
 import { useMessageSocket } from "@/hooks/client-side/use-message-socket"
@@ -8,8 +6,8 @@ import { useEffect, useState } from "react"
 import { ClientSocketEvents, ServerSocketEvents, TempMessage } from "@/types"
 import { useSocket } from "@/components/providers/socket-provider"
 import { useSession } from "next-auth/react"
-import { Button } from "../ui/button"
 import { InviteCodeBtn } from "./InviteCodeBtn"
+import { SocketIndicator } from "../indicators/socket-indicator"
 
 export const DashboardWithSocket = ({ params }: ClientDashboardProps) => {
 
@@ -63,6 +61,7 @@ export const DashboardWithSocket = ({ params }: ClientDashboardProps) => {
                 }
             </div>
             {/* <SocketIndicator /> */}
+            <SocketIndicator />
             <MessageInput roomId={params.room_id} />
         </main>
     )
