@@ -2,7 +2,11 @@ import { Server as NetServer } from "http";
 import { NextApiRequest } from "next";
 import { Server as ServerIO } from "socket.io";
 
-import { ClientSocketEvents, NextApiResponseServerIO, ServerSocketEvents, JoinRoomSocketEventsParams, TempMessage } from "@/types";
+import { SocketEvents, ServerSocketEventsTypes, NextApiResponseServerIO, ServerSocketMessage, JoinRoomSocketEventsParams } from "@/types";
+
+import { User } from "@prisma/client";
+import { Socket } from "socket.io-client";
+
 export const config = {
     api: {
         bodyParser: false
@@ -11,34 +15,32 @@ export const config = {
 
 const ioHandler = (req: NextApiRequest, res: NextApiResponseServerIO) => {
     if (!res.socket.server.io) {
-        console.log('Init socket server')
         const path = "/api/socket/io"
         const httpServer: NetServer = res.socket.server as any;
         const io = new ServerIO(httpServer, {
             path: path,
             addTrailingSlash: false,
             cors: {
+                credentials: true,
                 origin: "*",
+                methods: ["GET", "POST"],
+                optionsSuccessStatus: 200
             },
         });
 
         // Handle Room Joining and Leaving
-
         io.on("connection", (socket) => {
-            socket.on(ServerSocketEvents.JOIN_ROOM, ({ user, room }) => {
+            console.log("Connected: " + socket.id)
+
+            socket.on(SocketEvents.JOIN_ROOM, ({ user, room }: JoinRoomSocketEventsParams) => {
+                if (!user) return
                 if (!room) return
+                console.log(user)
                 if (socket.rooms.has(room)) socket.leave(room);
                 socket.join(room);
-
-                io.to(room).emit(
-                    ClientSocketEvents.SERVER_MESSAGE,
-                    {
-                        user: null,
-                        type: ClientSocketEvents.HAS_JOINED_ROOM,
-                        message: `${user.name} has joined the room`
-                    } as TempMessage
-                );
-            });
+            })
+            
+            return null
         })
 
         res.socket.server.io = io;

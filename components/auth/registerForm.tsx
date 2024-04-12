@@ -21,6 +21,9 @@ import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/auth/formError';
 import { FormSuccess } from './formSuccess';
 
+import { FaEyeSlash } from "react-icons/fa";
+import { FaEye } from "react-icons/fa";
+
 import { ProvidersLogin } from './providersLogin';
 
 // Server Actions RSC
@@ -31,6 +34,8 @@ export const RegisterForm = () => {
     const [isPending, startTransition] = useTransition();
     const [error, setError] = useState<string | undefined>("");
     const [success, setSuccess] = useState<string | undefined>("");
+
+    const [showPassword, setShowPassword] = useState(false);
 
     const form = useForm<z.infer<typeof RegisterSchema>>({
         resolver: zodResolver(RegisterSchema),
@@ -101,11 +106,18 @@ export const RegisterForm = () => {
                                 <FormItem>
                                     <FormLabel>Password</FormLabel>
                                     <FormControl>
-                                        <Input
-                                            {...field}
-                                            disabled={isPending}
-                                            placeholder="ilovefishes123"
-                                            type='password' />
+                                        <div className="relative">
+                                            <Input
+                                                {...field}
+                                                disabled={isPending}
+                                                placeholder="ilovefishes123"
+                                                type={showPassword ? "text" : "password"} />
+                                            <div className='absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer' onClick={() => setShowPassword(!showPassword)}>
+                                                {
+                                                    showPassword ? <FaEye /> : <FaEyeSlash />
+                                                }
+                                            </div>
+                                        </div>
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -149,7 +161,7 @@ export const RegisterForm = () => {
                 </div>
 
                 <ProvidersLogin />
-                
+
                 <Link href="/login" className='text-sm text-center hover:underline mx-auto relative block mt-5'>Already have an account?</Link>
             </div>
         </div>

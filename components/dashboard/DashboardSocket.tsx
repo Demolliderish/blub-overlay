@@ -1,9 +1,8 @@
 "use client"
 import { MessageInput } from "@/components/dashboard/sendMessage"
 import { ClientDashboardProps } from "./dashboard"
-import { useMessageSocket } from "@/hooks/client-side/use-message-socket"
 import { useEffect, useState } from "react"
-import { ClientSocketEvents, ServerSocketEvents, TempMessage } from "@/types"
+import { SocketEvents } from "@/types"
 import { useSocket } from "@/components/providers/socket-provider"
 import { useSession } from "next-auth/react"
 import { InviteCodeBtn } from "./InviteCodeBtn"
@@ -14,20 +13,18 @@ export const DashboardWithSocket = ({ params }: ClientDashboardProps) => {
 
     const session = useSession()
     const user = session.data?.user;
-    const [messages, setMessages] = useState<TempMessage[]>([])
     const { socket } = useSocket()
-
-    useMessageSocket({ setMessages })
 
     useEffect(() => {
         if (!socket) return
-        console.log("Connecting to Room: " + params.room_id)
-
-        socket.emit(ServerSocketEvents.JOIN_ROOM, {
+        socket.emit(SocketEvents.JOIN_ROOM, {
             user: user,
             room: params.room_id
         })
 
+        socket.on(SocketEvents.SERVER_MESSAGE, (message: string) => {
+            console.log(message)
+        })
     }, [socket])
 
     return (
@@ -39,26 +36,6 @@ export const DashboardWithSocket = ({ params }: ClientDashboardProps) => {
                     </h1>
                     <InviteCodeBtn roomId={params.room_id} />
                 </div>
-                {
-                    messages.map((message, index) => {
-
-                        if (message.type === ClientSocketEvents.HAS_JOINED_ROOM) {
-                            return (
-                                <div key={index}>
-                                    {message.message}
-                                </div>
-                            )
-                        }
-
-                        return (
-                            <div key={index}>
-                                {message.user?.name} : {message.message}
-                            </div>
-                        )
-                    }
-
-                    )
-                }
             </div>
 
             <SocketIndicator />

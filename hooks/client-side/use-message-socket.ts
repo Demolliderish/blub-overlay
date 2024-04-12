@@ -1,5 +1,4 @@
 import { useSocket } from "@/components/providers/socket-provider";
-import { ClientSocketEvents, TempMessage } from "@/types";
 import { Dispatch, SetStateAction, useEffect } from "react";
 
 export const useMessageSocket = ({ setMessages }: { setMessages: Dispatch<SetStateAction<TempMessage[]>> }) => { // <-- Client socket (NOT SERVER (HOST) SOCKET)

@@ -9,10 +9,19 @@ import { useOrigin } from "@/hooks/use-origin"
 import { createRoom } from "@/server/socket/create-room"
 import { toast } from "sonner"
 import { navigate } from "@/server/navigate/navigate"
+import { useEffect } from "react"
+import { hasRoom } from "@/server/socket/has-room"
 
 export default function SocketPage() {
 
     const origin = useOrigin()
+
+    useEffect(() => {
+        if (!origin) return
+        hasRoom().then((res) => {
+            if (res?.room) navigate(`${origin}/socketio/${res.room}`)
+        })
+    }, [origin])
 
     const create = () => {
         createRoom().then((res) => {

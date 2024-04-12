@@ -1,7 +1,7 @@
 "use client"
 
 import axios from "axios";
-import { ServerSocketEvents } from "@/types";
+import { SocketEvents } from "@/types";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
@@ -17,7 +17,7 @@ export const MessageInput = ({ roomId }: { roomId: string }) => {
         try {
             const url = "/api/socket/eventHandler";
             const res = await axios.post(url, {
-                event: ServerSocketEvents.USER_MESSAGE,
+                event: SocketEvents.USER_MESSAGE,
                 message: message,
                 user: user,
                 roomId: roomId,

@@ -12,16 +12,10 @@ export default async function Page({ params }: { params: { room_id: string } }) 
     if (!user) { // If user does not exist redirect back to homepage
         redirect("/")
     }
-
+    
     const room = await db.room.findUnique({
-        where: {
-            id: params.room_id,
-            users: {
-                some: {
-                    id: user.id,
-                }
-            }
-        },
+        where: { id: params.room_id, },
+        include: { users: { where: { userId: user.id } } },
     })
 
     if (!room) { // If room does not exist OR user is NOT in room, redirect back to homepage

@@ -14,5 +14,6 @@ export const authRoutes = [
     "/auth/error",
 ]
 
+export const apiOverlayHandler = "/api/socket/overlayHandler"
 export const apiAuthPrefix = "/api/auth"
 export const DEFAULT_LOGIN_REDIR = "/protected-route"

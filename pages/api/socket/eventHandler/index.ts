@@ -1,6 +1,5 @@
 import { NextApiRequest } from "next";
-import { NextApiResponseServerIO, TempMessage } from "@/types";
-import { ServerSocketEvents, ClientSocketEvents } from "@/types";
+import { ClientSocketMessage, NextApiResponseServerIO, ServerSocketEventsTypes, SocketEvents } from "@/types";
 
 export default async function handler(
     req: NextApiRequest,
@@ -12,28 +11,40 @@ export default async function handler(
     }
 
     try {
-        const { message, event, user, roomId } = req.body
+        const { message, event, user, roomId } = req.body as ClientSocketMessage
+
+        console.log(user)
 
         if (!roomId) {
             return res.status(400).json({ error: "Room ID not found" })
         }
 
-        if (!message) {
-            return res.status(400).json({ error: "Message missing" })
+        if (!user) {
+            return res.status(400).json({ error: "User not found" })
         }
 
-        if (event === ServerSocketEvents.USER_MESSAGE) {
-            res?.socket?.server?.io?.to(roomId).emit(ClientSocketEvents.SERVER_MESSAGE, {
-                user: user,
-                type: ClientSocketEvents.USER_MESSAGE,
-                message: message
-            } as TempMessage)
+        if (!message || !event) {
+            return res.status(400).json({ error: "Body missing" })
+        }
+
+
+        switch (event) {
+            case SocketEvents.USER_MESSAGE:
+                console.log("[SERVER_MESSAGE]")
+                res?.socket?.server?.io?.to(roomId).emit(SocketEvents.SERVER_MESSAGE, {
+                    user: user,
+                    type: ServerSocketEventsTypes.RECEIVED_USER,
+                    message: message
+                })
+                break
+            default:
+                break
         }
 
         return res.status(200).json({ message: "Success" });
 
     } catch (e) {
         console.log("[MESSAGES_POST]", e);
-        return res.status(500).json({ message: "Internal Error" });
+        return res.status(500).json({ error: "Internal Error" });
     }
 }   

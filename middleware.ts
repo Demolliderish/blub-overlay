@@ -6,8 +6,9 @@ import authConfig from "./auth.config"
 import {
     DEFAULT_LOGIN_REDIR,
     apiAuthPrefix,
+    apiOverlayHandler,
     authRoutes,
-    publicRoutes
+    publicRoutes,
 } from '@/routes'
 
 const { auth } = NextAuth(authConfig)
@@ -18,10 +19,12 @@ export default auth((req) => {
     const isLoggedIn = !!req.auth
 
     const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix)
+    const isApiEventHandlerRoute = nextUrl.pathname.startsWith(apiOverlayHandler)
+
     const isPublicRoutes = publicRoutes.includes(nextUrl.pathname)
     const isAuthRoute = authRoutes.includes(nextUrl.pathname)
 
-    if (isApiAuthRoute) return // Do nothing if API auth route
+    if (isApiAuthRoute || isApiEventHandlerRoute) return // Do nothing if API auth route
 
     if (isAuthRoute) {
         if (isLoggedIn) {

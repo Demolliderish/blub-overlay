@@ -30,9 +30,10 @@ model User {
   updatedAt DateTime @updatedAt
 
   overlays UserOnOverlay[]
-  room     Room?           @relation(fields: [roomID], references: [id])
-  roomID   String?
+
   accounts Account[]
+
+  room UserInRoom?
 }
 
 model Account {
@@ -67,11 +68,12 @@ model VerificationToken {
 // ------------------------------------------------- //
 
 // Main Overlay
+
 model Overlay {
   id        String @id @default(uuid())
   overlayID String
   name      String
-  github    String
+  cdn       String
 
   users UserOnOverlay[]
   // room  Room?
@@ -87,11 +89,26 @@ model UserOnOverlay {
   overlayID String
 }
 
+model UserInRoom {
+  id   String          @id @default(uuid())
+  role UserInRoomRoles @default(GUEST)
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  room   Room   @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  userId String @unique
+  roomId String
+}
+
+enum UserInRoomRoles {
+  OWNER
+  GUEST
+}
+
 model Room {
   id         String @id @default(uuid())
   inviteCode String @unique
 
-  users User[]
+  users UserInRoom[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

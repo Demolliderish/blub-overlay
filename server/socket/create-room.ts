@@ -10,29 +10,37 @@ export const createRoom = async () => {
     if (!session) {
         return { error: "Unauthorized" }
     }
-    
+
     try {
 
-        const userInRoom = await db.user.findUnique({
-            where: { id: session?.user?.id },
+        const user = await db.user.findUnique({
+            where: { id: session?.user.id },
             include: { room: true },
         });
 
-        if (userInRoom?.room) {
-            return { error: "Already in room!" }
+        // Validate if the user is already in the room or not
+
+        if (user?.room) {
+            if (user.room?.role === "OWNER") {
+                return { error: `You've already created a room! Room ID : ${user.room.userId}` }
+            }
+            return { error: `You're already in a room!` }
         }
 
-        const room = await db.room.create({
+
+        // Create new room
+
+        const newRoom = await db.room.create({
             data: {
                 inviteCode: uuidv4(),
                 users: {
-                    connect: {
-                        id: session?.user?.id
-                    }
-                },
+                    create: [
+                        { userId: session?.user?.id as string, role: "OWNER" }
+                    ]
+                }
             }
         })
-        return { success: room }
+        return { success: newRoom }
     }
     catch (error) {
         return { error: "Failed to create room!" }
