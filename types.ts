@@ -74,6 +74,8 @@ export type ClientSocketMessage = {
     roomId : string
 }
 
+// ------------------------- Rocket League Events ----------------------
+
 
 // // TEMPORARY TYPES FOR TESTING PURPOSES
 
