@@ -1,21 +1,33 @@
+# Exported from Render on 2024-04-12T06:52:46Z
 services:
 - type: web
-  name: next-js
+  name: blub-overlay
   runtime: node
-  plan: starter
-  buildCommand: yarn; yarn build
-  startCommand: yarn start
-  autoDeploy: false
+  repo: https://github.com/Demolliderish/blub-overlay
+  branch: master
+  plan: free
   envVars:
-  - key: NODE_ENV
-    value: production
-# Uncomment the following to deploy this app as a static site on render
-# - type: web
-#   name: nextjs-static   
-#   runtime: static
-#   buildCommand: yarn; yarn build
-#   staticPublishPath: out
-#   pullRequestPreviewsEnabled: true     # optional
-#   envVars:
-#   - key: NODE_ENV
-#     value: production
+  - key: TWITCH_CLIENT_SECRET
+    sync: false
+  - key: TWITCH_CLIENT_ID
+    sync: false
+  - key: PORT
+    sync: false
+  - key: NEXTAUTH_URL
+    sync: false
+  - key: NEXT_PUBLIC_SITE_URL
+    sync: false
+  - key: GITHUB_CLIENT_SECRET
+    sync: false
+  - key: GITHUB_CLIENT_ID
+    sync: false
+  - key: DATABASE_URL
+    sync: false
+  - key: AUTH_TRUST_HOST
+    sync: false
+  - key: AUTH_SECRET
+    sync: false
+  region: oregon
+  buildCommand: npm install; npm run build; npx prisma generate
+  startCommand: npm run start
+version: "1"
