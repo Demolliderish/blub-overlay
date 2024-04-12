@@ -10,7 +10,7 @@ export const Ov_MessageHandler = () => {
     const [currentTarget, setCurrentTarget] = useState({})
 
     useEffect(() => {
-
+        if (!gameData || !gameData?.players) return
         setCurrentTarget(gameData.players[gameData.game.target])
 
     }, [gameData])
